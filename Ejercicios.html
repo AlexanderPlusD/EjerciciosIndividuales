@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicios de Programación</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>Menú de Ejercicios</h1>
+    <div class="menu">
+        <button onclick="invertirArreglo()">Ejercicio 1: Invertir Arreglo</button>
+        <button onclick="buscarElemento()">Ejercicio 2: Buscar en Matriz</button>
+        <button onclick="procesarPesos()">Ejercicio 3: Procesar Pesos</button>
+        <button onclick="cursoMayorPromedio()">Ejercicio 4: Promedio de Cursos</button>
+        <button onclick="ingresoEmpleados()">Ejercicio 5: Sueldo de Empleados</button>
+    </div>
+
+    <div id="resultado"></div>
+
+    <script>
+        function showErrorMessage(message) {
+            document.getElementById("resultado").innerHTML = `<span class="error">${message}</span>`;
+        }
+
+        function invertirArreglo() {
+            const input = prompt("Introduce los elementos del arreglo separados por comas:");
+            if (!input) {
+                showErrorMessage("Error: No se introdujeron valores.");
+                return;
+            }
+            let arreglo = input.split(",").map(Number);
+            if (arreglo.some(isNaN)) {
+                showErrorMessage("Error: Debes introducir solo números separados por comas.");
+                return;
+            }
+            let invertido = arreglo.reverse();
+            document.getElementById("resultado").innerHTML = `Arreglo invertido: ${invertido.join(", ")}`;
+        }
+
+        function buscarElemento() {
+            const filas = parseInt(prompt("Introduce el número de filas del arreglo bidimensional:"));
+            const columnas = parseInt(prompt("Introduce el número de columnas del arreglo bidimensional:"));
+            
+            if (isNaN(filas) || isNaN(columnas) || filas <= 0 || columnas <= 0) {
+                showErrorMessage("Error: Debes introducir un número válido de filas y columnas.");
+                return;
+            }
+            
+            let matriz = [];
+            
+            for (let i = 0; i < filas; i++) {
+                let fila = prompt(`Introduce los elementos de la fila ${i + 1}, separados por comas:`).split(",").map(Number);
+                if (fila.some(isNaN) || fila.length !== columnas) {
+                    showErrorMessage(`Error: Introduce solo números válidos y la cantidad correcta de columnas (${columnas}) en la fila ${i + 1}.`);
+                    return;
+                }
+                matriz.push(fila);
+            }
+            
+            const elemento = parseInt(prompt("Introduce el elemento que deseas buscar:"));
+            if (isNaN(elemento)) {
+                showErrorMessage("Error: Debes introducir un número válido para buscar.");
+                return;
+            }
+            
+            let encontrado = false;
+            for (let i = 0; i < filas; i++) {
+                if (matriz[i].includes(elemento)) {
+                    encontrado = true;
+                    break;
+                }
+            }
+            
+            document.getElementById("resultado").innerHTML = `El elemento ${elemento} ${encontrado ? "se encuentra" : "no se encuentra"} en la matriz.`;
+        }
+
+        function procesarPesos() {
+            let pesos = [];
+            
+            for (let i = 0; i < 10; i++) {
+                let peso = parseFloat(prompt(`Introduce el peso de la persona ${i + 1}:`));
+                if (isNaN(peso) || peso <= 0) {
+                    showErrorMessage("Error: Debes introducir pesos válidos.");
+                    return;
+                }
+                pesos.push(peso);
+            }
+            
+            let promedio = pesos.reduce((acc, curr) => acc + curr, 0) / pesos.length;
+            let mayorAlPromedio = pesos.filter(p => p > promedio).length;
+            let menorAlPromedio = pesos.filter(p => p < promedio).length;
+            
+            document.getElementById("resultado").innerHTML = `
+                <strong>Promedio de pesos:</strong> ${promedio.toFixed(2)} kg<br>
+                Personas con peso mayor al promedio: ${mayorAlPromedio}<br>
+                Personas con peso menor al promedio: ${menorAlPromedio}
+            `;
+        }
+
+        function cursoMayorPromedio() {
+            let cursos = {
+                "Estructura de datos": [],
+                "Desarrollo de Aplicaciones": [],
+                "Ingeniería de Software": [],
+                "Administración de Base de Datos": [],
+                "Inglés IV": []
+            };
+            
+            for (let curso in cursos) {
+                for (let i = 0; i < 5; i++) {
+                    let nota = parseFloat(prompt(`Introduce la nota del alumno ${i + 1} para el curso de ${curso}:`));
+                    if (isNaN(nota) || nota < 0 || nota > 10) {
+                        showErrorMessage("Error: Las notas deben ser números entre 0 y 10.");
+                        return;
+                    }
+                    cursos[curso].push(nota);
+                }
+            }
+            
+            let promedios = {};
+            for (let curso in cursos) {
+                let promedio = cursos[curso].reduce((acc, curr) => acc + curr, 0) / cursos[curso].length;
+                promedios[curso] = promedio;
+            }
+            
+            let mayorPromedio = Math.max(...Object.values(promedios));
+            let cursosConMayorPromedio = Object.keys(promedios).filter(curso => promedios[curso] === mayorPromedio);
+            
+            document.getElementById("resultado").innerHTML = `
+                <strong>Curso(s) con el mayor promedio:</strong> ${cursosConMayorPromedio.join(", ")}<br>
+                <strong>Mayor promedio:</strong> ${mayorPromedio.toFixed(2)}
+            `;
+        }
+
+        function ingresoEmpleados() {
+            let empleados = [];
+            let sueldos = [];
+            
+            for (let i = 0; i < 5; i++) {
+                let empleado = prompt(`Introduce el nombre del empleado ${i + 1}:`);
+                if (!empleado) {
+                    showErrorMessage("Error: El nombre del empleado no puede estar vacío.");
+                    return;
+                }
+                empleados.push(empleado);
+                
+                let sueldoEmpleado = [];
+                for (let j = 0; j < 5; j++) {
+                    let sueldo = parseFloat(prompt(`Introduce el sueldo de la quincena ${j + 1} para ${empleado}:`));
+                    if (isNaN(sueldo) || sueldo < 0) {
+                        showErrorMessage("Error: Debes introducir un sueldo válido.");
+                        return;
+                    }
+                    sueldoEmpleado.push(sueldo);
+                }
+                sueldos.push(sueldoEmpleado);
+            }
+            
+            let acumulados = sueldos.map(sueldoEmpleado => sueldoEmpleado.reduce((acc, curr) => acc + curr, 0));
+            let totalPagado = acumulados.reduce((acc, curr) => acc + curr, 0);
+            let mayorIngreso = Math.max(...acumulados);
+            let empleadoMayorIngreso = empleados[acumulados.indexOf(mayorIngreso)];
+            
+            document.getElementById("resultado").innerHTML = `
+                <strong>Total pagado en sueldos:</strong> ${totalPagado.toFixed(2)}<br>
+                <strong>Empleado con mayor ingreso acumulado:</strong> ${empleadoMayorIngreso}<br>
+                <strong>Ingresos acumulados por empleado:</strong> ${acumulados.map(a => a.toFixed(2)).join(", ")}
+            `;
+        }
+    </script>
+
+</body>
+</html>
